@@ -1,5 +1,6 @@
 import { AppDataSource } from "@/config/data-source";
 import { Categoria } from "@/entities/mp/Categoria";
+import { typeCategoria } from "@/types/mp/Categoria";
 
 const categoriaRepo = AppDataSource.getRepository(Categoria);
 
@@ -10,7 +11,7 @@ export const CategoriaService = {
     });
   },
 
-  async create(data: any) {
+  async create(data: typeCategoria) {
     const nuevaCategoria = categoriaRepo.create({
       ...data,
       isActive: true,
@@ -18,17 +19,18 @@ export const CategoriaService = {
     return await categoriaRepo.save(nuevaCategoria);
   },
 
-  async update(id: number, data: any) {
-    const cat = await categoriaRepo.findOne({ where: { id } });
-    if (!cat) throw new Error("Categoría no encontrada");
+  async update(id: number, data: typeCategoria) {
+    const obj = await categoriaRepo.findOne({ where: { id } });
+    if (!obj) throw new Error("Categoría no encontrada");
 
-    Object.assign(cat, data);
-    return await categoriaRepo.save(cat);
+    Object.assign(obj, data);
+    return await categoriaRepo.save(obj);
   },
 
   async toggleStatus(id: number) {
-    const cat = await categoriaRepo.findOne({ where: { id } });
-    cat.isActive = !cat.isActive;
-    return await categoriaRepo.save(cat);
+    const obj = await categoriaRepo.findOne({ where: { id } });
+    if (!obj) throw new Error("Categoría no encontrada");
+    obj.isActive = !obj.isActive;
+    return await categoriaRepo.save(obj);
   },
 };
